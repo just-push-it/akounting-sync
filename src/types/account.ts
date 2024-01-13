@@ -1,0 +1,20 @@
+export type Account = {
+    id: number,
+    company_id: number,
+    type: string,
+    name: string,
+    number: string,
+    currency_code: string,
+    opening_balance: number,
+    opening_balance_formatted: string,
+    current_balance: number,
+    current_balance_formatted: string,
+    bank_name: string,
+    bank_phone: string,
+    bank_address: string,
+    enabled: boolean,
+    created_from: string,
+    created_by: string,
+    created_at: string,
+    updated_at: string
+}
