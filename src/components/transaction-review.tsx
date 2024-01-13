@@ -25,12 +25,12 @@ export const TransactionReview = (props: TransactionReviewProps) => {
     const [transactionErrors, setTransactionErrors] = useState<TransactionError[]>([])
 
     const onSubmit = async () => {
-        if(busy) return;
-        if(!account) return;
-        if(!transactions) return;
+        if (busy) return;
+        if (!account) return;
+        if (!transactions) return;
         setBusy(true);
 
-        for(const t of transactions) {
+        for (const t of transactions) {
             const res = await fetch(`/api/transactions`, {
                 method: "POST",
                 headers: {
@@ -42,8 +42,7 @@ export const TransactionReview = (props: TransactionReviewProps) => {
                     companyId: account.company_id
                 })
             })
-            const data = await res.json();
-            console.log(data);
+            await res.json();
         }
 
         setBusy(false);
@@ -58,9 +57,8 @@ export const TransactionReview = (props: TransactionReviewProps) => {
                 method: "GET",
             })
             const data = await res.json() as { found: boolean, transactions: AkauntingTransaction[] };
-            console.log(data);
             if (data.found) {
-                problems.push({ 
+                problems.push({
                     reference: t.reference,
                     error: "Found transaction with same reference number for this account",
                     data: data.transactions
@@ -74,7 +72,7 @@ export const TransactionReview = (props: TransactionReviewProps) => {
     }, [transactions, account]);
 
     useEffect(() => {
-        if(!file) {
+        if (!file) {
             setTransactions([]);
             setTransactionErrors([]);
             return;
@@ -87,8 +85,8 @@ export const TransactionReview = (props: TransactionReviewProps) => {
     }, [file])
 
     useEffect(() => {
-        if(!account) return;
-        if(!transactions) return;
+        if (!account) return;
+        if (!transactions) return;
         checkForDuplicates();
     }, [account, transactions])
 
@@ -96,7 +94,7 @@ export const TransactionReview = (props: TransactionReviewProps) => {
         busy ? setLoadingModalOpen(true) : setLoadingModalOpen(false);
     }, [busy])
 
-    if(!file) return (
+    if (!file) return (
         <Dropzone onFileAccepted={(file) => setFile(file)} extensions={[".csv"]} />
     )
 
@@ -104,8 +102,8 @@ export const TransactionReview = (props: TransactionReviewProps) => {
         <div className="flex flex-col">
             <div className="flex justify-center align-middle">
                 <h4 className="flex mr-2 pt-1.5">SELECT ACCOUNT</h4>
-                <AccountList 
-                    accountList={props.accounts} 
+                <AccountList
+                    accountList={props.accounts}
                     onChange={(a => setAccount(a))}
                     default={2}
                 />
@@ -139,36 +137,36 @@ export const TransactionReview = (props: TransactionReviewProps) => {
                                 <td className="pr-5">
                                     {
                                         error || busy
-                                            ? <span className="text-red-500 flex justify-center text-2xl">
-                                                <Tooltip
-                                                    content={
-                                                        <div className="text-nowrap">
-                                                            <p className="text-slate-100 text-base">Duplicate Transaction Ref#</p>
-                                                            {
-                                                                error?.data?.map((at) => (
-                                                                    <div key={t.reference} className="text-slate-100 text-sm border-l-2 border-solid border-slate-300 pl-2 mb-2">
-                                                                        {/* This should probably be gotten directly from Akaunting, but the settings endpoint doesn't grab defaults */}
-                                                                        <p className="text-slate-100 text-sm">Transaction #: TRA-{String(at.id).padStart(5, '0')}</p>
-                                                                        <p className="text-slate-100 text-sm">Date: {Intl.DateTimeFormat('en-US', { dateStyle: 'short' }).format(new Date(at.paid_at))}</p>
-                                                                        <p className="text-slate-100 text-sm">Amount: {at.amount_formatted}</p>
-                                                                        <p className="text-slate-100 text-sm">Descr: {at.description}</p>
-                                                                        <p className="text-blue-300 underline text-sm">
-                                                                            <a href={`http://accounting.internal.alitz.us/${at.company_id}/banking/transactions/${at.id}`} target="_blank">
-                                                                                Go to Transaction
-                                                                            </a>
-                                                                        </p>
-                                                                    </div>
-                                                                ))
-                                                            }
-                                                        </div>
-                                                    }
-                                                    showDelay={500}
-                                                    hideDelay={500}
-                                                >
-                                                    <TbCircleXFilled />
-                                                </Tooltip>
-                                            </span> 
-                                            : <span className="text-green-500 flex justify-center text-2xl"><TbCircleCheckFilled /></span>
+                                        ? <span className="text-red-500 flex justify-center text-2xl">
+                                            <Tooltip
+                                                content={
+                                                    <div className="text-nowrap">
+                                                        <p className="text-slate-100 text-base">Duplicate Transaction Ref#</p>
+                                                        {
+                                                            error?.data?.map((at) => (
+                                                                <div key={t.reference} className="text-slate-100 text-sm border-l-2 border-solid border-slate-300 pl-2 mb-2">
+                                                                    {/* This should probably be gotten directly from Akaunting, but the settings endpoint doesn't grab defaults */}
+                                                                    <p className="text-slate-100 text-sm">Transaction #: TRA-{String(at.id).padStart(5, '0')}</p>
+                                                                    <p className="text-slate-100 text-sm">Date: {Intl.DateTimeFormat('en-US', { dateStyle: 'short' }).format(new Date(at.paid_at))}</p>
+                                                                    <p className="text-slate-100 text-sm">Amount: {at.amount_formatted}</p>
+                                                                    <p className="text-slate-100 text-sm">Descr: {at.description}</p>
+                                                                    <p className="text-blue-300 underline text-sm">
+                                                                        <a href={`http://accounting.internal.alitz.us/${at.company_id}/banking/transactions/${at.id}`} target="_blank">
+                                                                            Go to Transaction
+                                                                        </a>
+                                                                    </p>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>
+                                                }
+                                                showDelay={500}
+                                                hideDelay={500}
+                                            >
+                                                <TbCircleXFilled />
+                                            </Tooltip>
+                                        </span>
+                                        : <span className="text-green-500 flex justify-center text-2xl"><TbCircleCheckFilled /></span>
                                     }
                                 </td>
                             </tr>
@@ -178,14 +176,14 @@ export const TransactionReview = (props: TransactionReviewProps) => {
             </table>
 
             <div className="flex justify-center">
-                <button 
+                <button
                     className="bg-green-700 text-slate-100 rounded-sm p-2 mt-5 disabled:bg-gray-700 disabled:text-gray-100"
                     onClick={onSubmit}
                     disabled={busy || transactionErrors.length > 0}
                 >
                     SUBMIT
                 </button>
-                <button 
+                <button
                     className="bg-red-700 text-slate-100 rounded-sm p-2 mt-5 ml-2"
                     onClick={() => setFile(null)}
                 >
@@ -198,10 +196,9 @@ export const TransactionReview = (props: TransactionReviewProps) => {
                 >
                     RE-RUN CHECKS
                 </button>
-
             </div>
 
-            <Modal 
+            <Modal
                 open={loadingModalOpen}
                 onClose={() => setLoadingModalOpen(false)}
             >

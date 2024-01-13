@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react"
+import { useEffect } from "react"
 
 export type ModalProps = {
     open: boolean
